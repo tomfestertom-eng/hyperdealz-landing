@@ -86,74 +86,64 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#000000] text-white flex flex-col justify-between items-center px-6 antialiased select-none font-sans">
+    <div className="fixed inset-0 h-screen w-screen bg-[#000000] text-white flex flex-col justify-between items-center px-6 antialiased select-none font-sans overflow-hidden">
       
-      {/* 1. TOP: Negativer Raum / Unsichtbarer Header */}
-      <header className="h-[25vh] flex items-end justify-center">
-        {/* Platzhalter für vertikale Balance */}
-      </header>
-
-      {/* 2. CENTER: Fokussierte Interaktionszone */}
-      <main className="flex flex-col items-center justify-center w-full max-w-[340px] text-center">
-        
-        {/* Brand-Header */}
+      {/* 1. TOP: Status Indikator (isoliert im oberen Drittel) */}
+      <header className="w-full flex flex-col items-center pt-[10vh]">
         <h1 className="text-2xl font-bold tracking-[0.2em] uppercase bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent select-text">
           Hyperdealz
         </h1>
-        
-        {/* Sensorischer Status-Indikator */}
         <div className="flex items-center gap-1.5 tracking-[0.15em] text-[9px] text-zinc-500 uppercase mt-2">
-          <span className="w-1 h-1 bg-[#BF953F] rounded-full animate-pulse" />
+          <span className="w-1.5 h-1.5 bg-[#BF953F] rounded-full animate-pulse" />
           System Aktiv / Pre-Launch
         </div>
+      </header>
 
-        {/* Formular-Sektion */}
-        <div className="w-full mt-12">
-          {!statusId ? (
-            <div className="flex flex-col items-center w-full gap-4">
-              <p className="text-[10px] tracking-[0.2em] text-zinc-400 uppercase">
-                Zugangskapazität limitiert.
-              </p>
+      {/* 2. CENTER: Interaktionszone (absolut zentriert) */}
+      <main className="w-full max-w-[340px] flex flex-col items-center justify-center my-auto">
+        {!statusId ? (
+          <div className="w-full flex flex-col items-center gap-4">
+            <p className="text-[10px] tracking-[0.2em] text-zinc-400 uppercase">
+              Zugangskapazität limitiert.
+            </p>
 
-              <form 
-                onSubmit={handleSubmit} 
-                className="w-full flex items-center border border-zinc-900 focus-within:border-[#BF953F] rounded-sm transition-all duration-300 bg-transparent h-11"
+            <form 
+              onSubmit={handleSubmit} 
+              className="w-full flex items-center border border-zinc-900 focus-within:border-[#BF953F] rounded-sm transition-all duration-300 bg-transparent h-11"
+            >
+              <input 
+                type="email" 
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onFocus={() => triggerHaptic(10)}
+                placeholder="mail@domain.tld" 
+                className="w-full bg-transparent px-4 text-xs tracking-wider text-white placeholder-zinc-700 outline-none appearance-none select-text"
+                style={{
+                  WebkitBoxShadow: '0 0 0 30px #000000 inset',
+                  WebkitTextFillColor: '#FFFFFF',
+                }}
+                disabled={isSubmitting}
+              />
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="h-full pr-4 pl-2 text-zinc-500 hover:text-[#FCF6BA] transition-colors text-sm font-light bg-transparent border-none outline-none cursor-pointer disabled:opacity-30"
               >
-                <input 
-                  type="email" 
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  onFocus={() => triggerHaptic(10)}
-                  placeholder="mail@domain.tld" 
-                  className="w-full bg-transparent px-4 py-3 text-xs tracking-wider text-white placeholder-zinc-700 outline-none appearance-none select-text"
-                  style={{
-                    // Erwungenes Override gegen hässliche, weiße Browser-Autofill-Overlays
-                    WebkitBoxShadow: '0 0 0 30px #000000 inset',
-                    WebkitTextFillColor: '#FFFFFF',
-                  }}
-                  disabled={isSubmitting}
-                />
-                <button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="h-full pr-4 pl-2 text-zinc-500 hover:text-[#FCF6BA] transition-colors text-sm font-light disabled:opacity-30 bg-transparent border-none outline-none cursor-pointer"
-                >
-                  {isSubmitting ? '...' : '›'}
-                </button>
-              </form>
-            </div>
-          ) : (
-            /* Minimalistischer Success-State mit Slot-Machine */
-            <div className="w-full py-3 border border-zinc-900 rounded-sm font-mono text-[10px] tracking-[0.15em] text-zinc-400 uppercase animate-fade-in">
-              Status gesichert. ID: <span ref={counterRef} className="text-[#FCF6BA] font-bold">#0000</span>
-            </div>
-          )}
-        </div>
+                {isSubmitting ? '...' : '›'}
+              </button>
+            </form>
+          </div>
+        ) : (
+          /* Minimalistischer Success-State mit integrierter Slot Machine */
+          <div className="w-full py-3 border border-zinc-900 rounded-sm font-mono text-[10px] tracking-[0.15em] text-zinc-400 uppercase text-center animate-fade-in">
+            Status gesichert. ID: <span ref={counterRef} className="text-[#FCF6BA] font-bold">#0000</span>
+          </div>
+        )}
       </main>
 
-      {/* 3. BOTTOM: Rechtssicherer, fixierter Footer */}
-      <footer className="h-[15vh] flex items-center justify-center gap-6 opacity-20 hover:opacity-100 transition-opacity duration-300">
+      {/* 3. BOTTOM: Fixierter Footer ohne Interferenz */}
+      <footer className="w-full flex items-center justify-center gap-6 pb-[5vh] opacity-20 hover:opacity-100 transition-opacity duration-300">
         <button 
           onClick={() => { triggerHaptic(10); setActiveModal('impressum'); }}
           className="text-[9px] tracking-[0.2em] uppercase text-zinc-400 hover:text-[#BF953F] bg-transparent border-none cursor-pointer transition-colors"
