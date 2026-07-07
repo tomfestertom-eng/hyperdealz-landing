@@ -1,0 +1,9 @@
+{
+  "name": "hyperdealz-landingpage",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build required for static HTML'"
+  }
+}
