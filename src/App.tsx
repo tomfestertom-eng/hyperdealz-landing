@@ -1,10 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase-Client (Vite-Syntax)
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from './lib/supabaseClient';
 
 type ModalType = 'none' | 'impressum' | 'datenschutz';
 
