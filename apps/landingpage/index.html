@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hyperdealz | Pre-Launch</title>
+    
+    <!-- Tailwind CSS & Supabase SDK direkt über CDN laden -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+      // CONFIGURATION: Ersetze diese beiden Werte mit deinen Daten aus Supabase!
+      const SUPABASE_URL = "https://lefdgxbkzmgwkgywvhet.supabase.co";
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZmRneGJrem1nd2tneXd2aGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjE5MzgsImV4cCI6MjA5ODk5NzkzOH0.383Hu1-s57UHX8NvKFsv8TnrJQSh0fncwH2nQbEqpg0";
+      
+      let supabaseClient;
+
+      // Initialisierung beim Laden der Seite
+      window.addEventListener('DOMContentLoaded', () => {
+        if (SUPABASE_URL !== "DEINE_SUPABASE_URL_HIER") {
+          supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+      });
+
+      // Haptisches Feedback für Smartphones
+      const triggerHaptic = (ms) => {
+        if (navigator.vibrate) navigator.vibrate(ms);
+      };
+
+      // Das Formular absenden
+      async function handleLeadSubmit(event) {
+        event.preventDefault();
+        triggerHaptic(15);
+        
+        const emailInput = document.getElementById('email-field');
+        const formContainer = document.getElementById('form-container');
+        const email = emailInput.value;
+
+        if (!supabaseClient) {
+          alert("Fehler: Supabase Keys wurden noch nicht in den Code eingetragen!");
+          return;
+        }
+
+        try {
+          // Daten in die 'leads' Tabelle schießen
+          const { data, error } = await supabaseClient
+            .from('leads')
+            .insert([{ email }])
+            .select('id')
+            .single();
+
+          if (error) {
+            if (error.code === '23505') {
+              alert('Diese E-Mail-Adresse ist bereits für den VIP-Launch registriert.');
+            } else {
+              throw error;
+            }
+          } else if (data) {
+            // Erfolg: Blende das Formular aus und zeige den VIP-Status (Slot-Machine-Style)
+            triggerHaptic([30, 50, 30]);
+            
+            formContainer.innerHTML = `
+              <div class="w-full bg-[#0c0c0c] border border-neutral-900 rounded-xl p-6 font-mono space-y-3 animate-fade-in">
+                <p class="text-[10px] text-neutral-500 uppercase tracking-wider">Dein System-Status</p>
+                <span id="vip-counter" class="block text-3xl font-bold text-white tracking-wider">#0000</span>
+                <p class="text-[9px] text-neutral-600 lowercase leading-relaxed">
+                  Token gesichert für ${email}
+                </p>
+              </div>
+            `;
+
+            // Schneller Zähler-Effekt für die VIP-ID
+            let current = 0;
+            const targetId = data.id;
+            const counterElement = document.getElementById('vip-counter');
+            
+            const interval = setInterval(() => {
+              current += Math.ceil(targetId / 20);
+              if (current >= targetId) {
+                current = targetId;
+                clearInterval(interval);
+                triggerHaptic(40);
+              }
+              counterElement.textContent = `#${String(current).padStart(4, '0')}`;
+            }, 40);
+          }
+        } catch (err) {
+          console.error(err);
+          alert('System kurz ausgelastet. Bitte versuche es gleich noch einmal.');
+        }
+      }
+    </script>
+
+    <style>
+      .gold-text {
+        background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    </style>
+  </head>
+  <body class="bg-[#000000] text-white min-h-screen flex flex-col justify-between items-center p-6 antialiased font-sans">
+    
+    <div class="h-4"></div>
+
+    <!-- CENTER CONTAINER -->
+    <main class="w-full max-w-sm flex flex-col items-center text-center px-4">
+      
+      <h1 class="text-3xl font-black tracking-[0.25em] gold-text uppercase">
+        Hyperdealz
+      </h1>
+      
+      <p class="text-[10px] text-emerald-500 font-mono tracking-widest uppercase mt-2 flex items-center gap-1.5 justify-center">
+        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        System Aktiv / Pre-Launch
+      </p>
+
+      <!-- Interaktiver Formular-Bereich -->
+      <div class="w-full mt-24 mb-4" id="form-container">
+        <p class="text-[10px] text-neutral-500 font-mono tracking-widest uppercase mb-3">
+          Zugangskapazität limitiert.
+        </p>
+
+        <form class="relative w-full flex items-center" onsubmit="handleLeadSubmit(event)">
+          <input
+            id="email-field"
+            type="email"
+            required
+            onfocus="triggerHaptic(10)"
+            placeholder="mail@domain.tld"
+            class="w-full bg-[#0c0c0c] border border-neutral-900 focus:border-[#bf953f]/50 rounded-xl pl-4 pr-12 py-3.5 text-sm text-neutral-200 placeholder-neutral-700 focus:outline-none transition-all duration-300 font-mono"
+          />
+          <button 
+            type="submit"
+            class="absolute right-3 text-neutral-500 hover:text-[#bf953f] transition-colors p-1 font-mono text-lg"
+          >
+            ›
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="flex justify-center space-x-6 text-[10px] font-mono uppercase tracking-wider text-neutral-600 mb-4">
+      <a href="#" class="hover:text-[#bf953f] transition-colors">Impressum</a>
+      <a href="#" class="hover:text-[#bf953f] transition-colors">Datenschutz</a>
+    </footer>
+
+  </body>
+</html>
