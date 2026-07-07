@@ -86,73 +86,92 @@ export default function App() {
   };
 
   return (
-    <div className="fixed inset-0 h-screen w-screen bg-[#000000] text-white flex flex-col justify-between items-center px-6 antialiased select-none font-sans overflow-hidden">
+    <div className="min-h-screen w-full bg-[#000000] text-white flex flex-col items-center justify-center relative px-6 font-sans antialiased selection:bg-[#BF953F]/30">
       
-      {/* 1. TOP: Status Indikator (isoliert im oberen Drittel) */}
-      <header className="w-full flex flex-col items-center pt-[10vh]">
-        <h1 className="text-2xl font-bold tracking-[0.2em] uppercase bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent select-text">
-          Hyperdealz
+      {/* Haupt-Container, zentral ausgerichtet */}
+      <main className="w-full max-w-sm flex flex-col items-center z-10 w-full mb-16">
+        
+        {/* Typografie & Header */}
+        <h1 className="text-3xl font-extrabold tracking-widest uppercase bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent text-center">
+          HYPERDEALZ
         </h1>
-        <div className="flex items-center gap-1.5 tracking-[0.15em] text-[9px] text-zinc-500 uppercase mt-2">
-          <span className="w-1.5 h-1.5 bg-[#BF953F] rounded-full animate-pulse" />
+        
+        {/* Sub-Header: System Aktiv / Pre-Launch (Grün/Grau) */}
+        <div className="flex items-center gap-2 mt-2 text-[10px] tracking-widest uppercase text-emerald-600 font-medium">
+          <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
           System Aktiv / Pre-Launch
         </div>
-      </header>
 
-      {/* 2. CENTER: Interaktionszone (absolut zentriert) */}
-      <main className="w-full max-w-[340px] flex flex-col items-center justify-center my-auto">
-        {!statusId ? (
-          <div className="w-full flex flex-col items-center gap-4">
-            <p className="text-[10px] tracking-[0.2em] text-zinc-400 uppercase">
-              Zugangskapazität limitiert.
-            </p>
+        <div className="w-full mt-12">
+          {!statusId ? (
+            <div className="flex flex-col items-center w-full gap-3">
+              {/* Formular-Header (sehr klein, graue Monospace) */}
+              <p className="text-[9px] tracking-[0.2em] text-neutral-500 uppercase font-mono text-center">
+                Zugangskapazität limitiert.
+              </p>
 
-            <form 
-              onSubmit={handleSubmit} 
-              className="w-full flex items-center border border-zinc-900 focus-within:border-[#BF953F] rounded-sm transition-all duration-300 bg-transparent h-11"
-            >
-              <input 
-                type="email" 
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => triggerHaptic(10)}
-                placeholder="mail@domain.tld" 
-                className="w-full bg-transparent px-4 text-xs tracking-wider text-white placeholder-zinc-700 outline-none appearance-none select-text"
-                style={{
-                  WebkitBoxShadow: '0 0 0 30px #000000 inset',
-                  WebkitTextFillColor: '#FFFFFF',
-                }}
-                disabled={isSubmitting}
-              />
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="h-full pr-4 pl-2 text-zinc-500 hover:text-[#FCF6BA] transition-colors text-sm font-light bg-transparent border-none outline-none cursor-pointer disabled:opacity-30"
+              {/* Input-Feld & Button */}
+              <form 
+                onSubmit={handleSubmit} 
+                className="w-full relative flex items-center bg-[#0c0c0c] border border-neutral-900 rounded-xl focus-within:border-[#BF953F] transition-colors duration-300 overflow-hidden"
               >
-                {isSubmitting ? '...' : '›'}
-              </button>
-            </form>
-          </div>
-        ) : (
-          /* Minimalistischer Success-State mit integrierter Slot Machine */
-          <div className="w-full py-3 border border-zinc-900 rounded-sm font-mono text-[10px] tracking-[0.15em] text-zinc-400 uppercase text-center animate-fade-in">
-            Status gesichert. ID: <span ref={counterRef} className="text-[#FCF6BA] font-bold">#0000</span>
-          </div>
-        )}
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onFocus={() => triggerHaptic(10)}
+                  placeholder="mail@domain.tld" 
+                  className="w-full bg-transparent px-4 py-3.5 text-sm text-neutral-200 placeholder-neutral-700 outline-none font-mono tracking-wide"
+                  style={{
+                    WebkitBoxShadow: '0 0 0 30px #0c0c0c inset',
+                    WebkitTextFillColor: '#E5E5E5',
+                  }}
+                  disabled={isSubmitting}
+                />
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="absolute right-2 px-3 py-2 text-neutral-600 hover:text-[#FCF6BA] transition-colors font-bold text-lg disabled:opacity-30 bg-transparent"
+                >
+                  {isSubmitting ? '...' : '›'}
+                </button>
+              </form>
+            </div>
+          ) : (
+            /* Minimalistischer Success-State mit Slot-Machine */
+            <div className="w-full flex flex-col items-center gap-6 animate-fade-in mt-4">
+              <div className="w-12 h-12 bg-[#0c0c0c] border border-[#BF953F]/30 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(191,149,63,0.15)]">
+                <span className="text-[#BF953F] text-xl">✓</span>
+              </div>
+              
+              <div className="w-full py-5 bg-[#0c0c0c] border border-neutral-900 rounded-xl flex flex-col items-center justify-center gap-1.5">
+                <h2 className="text-[9px] uppercase tracking-widest text-neutral-500 font-mono">Status gesichert. ID:</h2>
+                <span ref={counterRef} className="text-3xl font-extrabold font-mono tracking-widest text-[#FCF6BA] tabular-nums">
+                  #0000
+                </span>
+              </div>
+              
+              <p className="text-[10px] tracking-widest text-neutral-600 max-w-[280px] text-center leading-relaxed font-mono uppercase">
+                Token generiert.<br/>
+                Empfänger: <span className="text-neutral-400">{email}</span>
+              </p>
+            </div>
+          )}
+        </div>
       </main>
 
-      {/* 3. BOTTOM: Fixierter Footer ohne Interferenz */}
-      <footer className="w-full flex items-center justify-center gap-6 pb-[5vh] opacity-20 hover:opacity-100 transition-opacity duration-300">
+      {/* FOOTER (Impressum & Datenschutz am unteren Rand fixiert) */}
+      <footer className="absolute bottom-6 w-full flex flex-row items-center justify-center gap-8 opacity-40 hover:opacity-100 transition-opacity duration-300">
         <button 
           onClick={() => { triggerHaptic(10); setActiveModal('impressum'); }}
-          className="text-[9px] tracking-[0.2em] uppercase text-zinc-400 hover:text-[#BF953F] bg-transparent border-none cursor-pointer transition-colors"
+          className="text-[9px] tracking-widest uppercase text-neutral-400 hover:text-[#BF953F] bg-transparent border-none cursor-pointer transition-colors"
         >
           Impressum
         </button>
         <button 
           onClick={() => { triggerHaptic(10); setActiveModal('datenschutz'); }}
-          className="text-[9px] tracking-[0.2em] uppercase text-zinc-400 hover:text-[#BF953F] bg-transparent border-none cursor-pointer transition-colors"
+          className="text-[9px] tracking-widest uppercase text-neutral-400 hover:text-[#BF953F] bg-transparent border-none cursor-pointer transition-colors"
         >
           Datenschutz
         </button>
@@ -160,30 +179,32 @@ export default function App() {
 
       {/* DEKLARATIVE MODALS */}
       {activeModal !== 'none' && (
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-[#0c0c0c] border border-neutral-900 w-full max-w-lg max-h-[75vh] rounded-sm p-6 flex flex-col justify-between shadow-2xl">
-            <div className="overflow-y-auto pr-2 space-y-4 text-xs text-neutral-400 leading-relaxed font-mono select-text">
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-[#0c0c0c] border border-neutral-900 w-full max-w-lg max-h-[80vh] rounded-xl p-6 flex flex-col shadow-2xl">
+            <div className="overflow-y-auto pr-2 space-y-4 text-[11px] tracking-wide text-neutral-400 leading-relaxed font-mono">
               {activeModal === 'impressum' ? (
                 <>
-                  <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-2">Impressum</h3>
-                  <p>Angaben gemäß § 5 TMG:</p>
+                  <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-3 border-b border-neutral-900 pb-2">Impressum</h3>
+                  <p className="uppercase text-neutral-500 mb-1 text-[9px] tracking-widest">Angaben gemäß § 5 TMG</p>
                   <p>[Dein vollständiger Name]<br />[Deine private Anschrift]<br />[Deine PLZ und Ort]</p>
-                  <p>Kontakt:<br />E-Mail: [Deine E-Mail-Adresse]</p>
-                  <p>Haftungsausschluss: Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.</p>
+                  <p className="uppercase text-neutral-500 mb-1 mt-3 text-[9px] tracking-widest">Kontakt</p>
+                  <p>E-Mail: [Deine E-Mail-Adresse]</p>
+                  <p className="uppercase text-neutral-500 mb-1 mt-3 text-[9px] tracking-widest">Haftungsausschluss</p>
+                  <p>Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links.</p>
                 </>
               ) : (
                 <>
-                  <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-2">Datenschutzerklärung</h3>
-                  <p>1. Datenschutz auf einen Blick</p>
+                  <h3 className="text-white text-xs font-bold uppercase tracking-widest mb-3 border-b border-neutral-900 pb-2">Datenschutzerklärung</h3>
+                  <p className="uppercase text-neutral-500 mb-1 text-[9px] tracking-widest">1. Datenschutz auf einen Blick</p>
                   <p>Wir erheben deine E-Mail-Adresse ausschließlich zur Benachrichtigung über den Start von Hyperdealz.de. Es findet keine Weitergabe an unbefugte Dritte statt.</p>
-                  <p>2. Speicherung und Löschung</p>
+                  <p className="uppercase text-neutral-500 mb-1 mt-3 text-[9px] tracking-widest">2. Speicherung und Löschung</p>
                   <p>Die Daten werden direkt in einer gesicherten PostgreSQL-Instanz bei Supabase gespeichert und durch strenge Row Level Security (RLS) geschützt. Du kannst der Speicherung jederzeit formlos widersprechen.</p>
                 </>
               )}
             </div>
             <button
               onClick={() => { triggerHaptic(10); setActiveModal('none'); }}
-              className="w-full mt-6 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 font-mono text-[10px] uppercase tracking-widest py-3 rounded-sm transition-all cursor-pointer"
+              className="w-full mt-6 bg-[#111111] hover:bg-[#1a1a1a] border border-neutral-800 text-neutral-400 hover:text-[#BF953F] font-mono text-[10px] uppercase tracking-widest py-3.5 rounded-lg transition-colors cursor-pointer"
             >
               [ Schließen ]
             </button>
