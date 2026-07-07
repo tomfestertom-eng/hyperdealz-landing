@@ -119,102 +119,121 @@
         const NEXT_PUBLIC_SUPABASE_URL = 'https://lefdgxbkzmgwkgywvhet.supabase.co';
         const NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZmRneGJrem1nd2tneXd2aGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjE5MzgsImV4cCI6MjA5ODk5NzkzOH0.383Hu1-s57UHX8NvKFsv8TnrJQSh0fncwH2nQbEqpg0';
         
-        // Supabase Client Initialisierung
-        const supabase = window.supabase.createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY);
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elemente ---
+            const form = document.getElementById('waitlist-form');
+            const emailInput = document.getElementById('email-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = errorMessage.querySelector('p');
 
-        // --- DOM Elemente ---
-        const form = document.getElementById('waitlist-form');
-        const emailInput = document.getElementById('email-input');
-        const submitBtn = document.getElementById('submit-btn');
-        const successMessage = document.getElementById('success-message');
-        const errorMessage = document.getElementById('error-message');
-        const errorText = errorMessage.querySelector('p');
-
-        // --- E-Mail Validierungsfunktion ---
-        function isValidEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        // --- Event Listener ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Verhindert den Standard-Event-Reset (Seiten-Reload)
-            
-            const email = emailInput.value.trim();
-            
-            if (!email || !isValidEmail(email)) {
-                errorText.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
-                errorMessage.classList.remove('hidden');
-                return;
+            // --- Supabase Initialisierung absichern ---
+            let supabase;
+            try {
+                if (typeof window.supabase !== 'undefined') {
+                    supabase = window.supabase.createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY);
+                } else {
+                    console.error('Supabase CDN konnte nicht geladen werden.');
+                }
+            } catch (err) {
+                console.error('Fehler bei der Supabase Initialisierung:', err);
             }
 
-            // UI State: Loading
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'LÄDT...';
-            errorMessage.classList.add('hidden');
-            emailInput.disabled = true;
+            // --- E-Mail Validierungsfunktion ---
+            function isValidEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
 
-            try {
-                // Supabase Insert: Lead in Tabelle 'leads' eintragen
-                const { error } = await supabase
-                    .from('leads')
-                    .insert([{ email }]);
-
-                if (error) {
-                    throw error;
+            // --- Event Listener ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Verhindert den Standard-Event-Reset (Seiten-Reload)
+                
+                const email = emailInput.value.trim();
+                
+                if (!supabase) {
+                    errorText.textContent = 'Systemfehler: Verbindung zur Datenbank (Supabase) konnte nicht hergestellt werden. Bitte Adblocker deaktivieren.';
+                    errorMessage.classList.remove('hidden');
+                    return;
                 }
 
-                // UI State: Success (Formular elegant ausblenden, Erfolgsmeldung zeigen)
-                form.style.display = 'none';
-                successMessage.classList.remove('hidden');
+                if (!email || !isValidEmail(email)) {
+                    errorText.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
+                    errorMessage.classList.remove('hidden');
+                    return;
+                }
 
-                // --- VIP Zähler Animation (Dark Cyber) ---
-                const counterElement = document.getElementById('vip-counter');
-                // Generiere eine zufällige VIP-Nummer (z.B. zwischen 100 und 8999)
-                const targetVipNumber = Math.floor(Math.random() * 8900) + 100;
-                const duration = 1500; // 1.5 Sekunden
-                const startTimestamp = performance.now();
+                // UI State: Loading
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'LÄDT...';
+                errorMessage.classList.add('hidden');
+                emailInput.disabled = true;
 
-                function animateCounter(timestamp) {
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    // easeOutQuart Funktion für flüssiges Auslaufen
-                    const easeOut = 1 - Math.pow(1 - progress, 4);
-                    const currentNumber = Math.floor(easeOut * targetVipNumber);
-                    
-                    // Formatierung als 4-stellige Nummer mit führenden Nullen
-                    counterElement.textContent = '#' + currentNumber.toString().padStart(4, '0');
+                try {
+                    // Supabase Insert: Lead in Tabelle 'leads' eintragen
+                    const { error } = await supabase
+                        .from('leads')
+                        .insert([{ email }]);
 
-                    if (progress < 1) {
-                        requestAnimationFrame(animateCounter);
-                    } else {
-                        // Finale Nummer setzen
-                        counterElement.textContent = '#' + targetVipNumber.toString().padStart(4, '0');
-                        // Haptisches Feedback auslösen (100ms Vibration)
-                        if (navigator.vibrate) {
-                            navigator.vibrate([100]);
+                    if (error) {
+                        throw error;
+                    }
+
+                    // UI State: Success (Formular elegant ausblenden, Erfolgsmeldung zeigen)
+                    form.style.display = 'none';
+                    successMessage.classList.remove('hidden');
+
+                    // --- VIP Zähler Animation (Dark Cyber) ---
+                    const counterElement = document.getElementById('vip-counter');
+                    // Generiere eine zufällige VIP-Nummer (z.B. zwischen 100 und 8999)
+                    const targetVipNumber = Math.floor(Math.random() * 8900) + 100;
+                    const duration = 1500; // 1.5 Sekunden
+                    const startTimestamp = performance.now();
+
+                    function animateCounter(timestamp) {
+                        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                        // easeOutQuart Funktion für flüssiges Auslaufen
+                        const easeOut = 1 - Math.pow(1 - progress, 4);
+                        const currentNumber = Math.floor(easeOut * targetVipNumber);
+                        
+                        // Formatierung als 4-stellige Nummer mit führenden Nullen
+                        counterElement.textContent = '#' + currentNumber.toString().padStart(4, '0');
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animateCounter);
+                        } else {
+                            // Finale Nummer setzen
+                            counterElement.textContent = '#' + targetVipNumber.toString().padStart(4, '0');
+                            // Haptisches Feedback auslösen (100ms Vibration)
+                            if (navigator.vibrate) {
+                                navigator.vibrate([100]);
+                            }
                         }
                     }
-                }
-                requestAnimationFrame(animateCounter);
+                    requestAnimationFrame(animateCounter);
 
-            } catch (error) {
-                console.error('Fehler beim Eintragen:', error);
-                
-                let errorMsgText = 'Ein Fehler ist aufgetreten. Bitte später versuchen.';
-                // Unique Constraint Error (E-Mail bereits vorhanden)
-                if (error.code === '23505') {
-                    errorMsgText = 'Diese E-Mail-Adresse ist bereits auf der Warteliste.';
+                } catch (error) {
+                    console.error('Fehler beim Eintragen:', error);
+                    
+                    let errorMsgText = 'Ein Fehler ist aufgetreten. Bitte später versuchen.';
+                    // Unique Constraint Error (E-Mail bereits vorhanden) oder andere Fehler
+                    if (error.code === '23505') {
+                        errorMsgText = 'Diese E-Mail-Adresse ist bereits auf der Warteliste.';
+                    } else if (error.message) {
+                        errorMsgText = error.message; // Zeige den echten Fehlertext, z.B. RLS Error
+                    }
+                    
+                    errorText.textContent = errorMsgText;
+                    errorMessage.classList.remove('hidden');
+                    
+                    // UI State: Reset bei Fehler
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'EINLADUNG ANFORDERN';
+                    emailInput.disabled = false;
+                    emailInput.focus();
                 }
-                
-                errorText.textContent = errorMsgText;
-                errorMessage.classList.remove('hidden');
-                
-                // UI State: Reset bei Fehler
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'EINLADUNG ANFORDERN';
-                emailInput.disabled = false;
-                emailInput.focus();
-            }
+            });
         });
     </script>
 </body>
