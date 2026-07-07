@@ -108,7 +108,15 @@ export default function App() {
           System Aktiv / Pre-Launch
         </p>
 
-        <div className="w-full mt-12 mb-4">
+        {/* DEMO AUCTION CARD (Nach oben verschoben) */}
+        <div className="w-full mt-8 mb-4 flex flex-col items-center gap-4">
+          <AuctionCard initialAuction={demoAuction} />
+          <button onClick={cycleStatus} className="text-[10px] text-white bg-neutral-800 px-4 py-2 rounded-md uppercase tracking-widest hover:bg-[#bf953f] transition-colors border border-neutral-700 font-bold shadow-lg">
+            [ Dev: Toggle Status ]
+          </button>
+        </div>
+
+        <div className="w-full mt-8 mb-4">
           <p className="text-[10px] text-neutral-500 font-mono tracking-widest uppercase mb-3">
             Zugangskapazität limitiert.
           </p>
@@ -144,15 +152,6 @@ export default function App() {
             </div>
           )}
         </div>
-
-        {/* DEMO AUCTION CARD */}
-        <div className="w-full mt-10 mb-8 flex flex-col items-center gap-4">
-          <AuctionCard initialAuction={demoAuction} />
-          <button onClick={cycleStatus} className="text-[9px] text-neutral-500 bg-neutral-900 px-3 py-1.5 rounded-md uppercase tracking-widest hover:text-[#bf953f] transition-colors border border-neutral-800">
-            [ Dev: Toggle Status ]
-          </button>
-        </div>
-
       </main>
 
       {/* FOOTER: Unten fixiert */}
