@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HYPERDEALZ - Exclusive Access</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        black: '#000000',
+                        charcoal: '#121212',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style type="text/tailwindcss">
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lux-card {
+            background-color: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Webkit Autofill Style Override für absolute Schwarz-Ästhetik */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #000000 inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        
+        .gold-text-gradient {
+            @apply bg-clip-text text-transparent bg-gradient-to-r from-amber-500 via-yellow-500 to-yellow-600;
+        }
+        
+        .gold-bg-gradient {
+            @apply bg-gradient-to-r from-amber-500 via-yellow-500 to-yellow-600;
+        }
+    </style>
+    
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="p-4 antialiased selection:bg-yellow-500 selection:text-black">
+
+    <main class="w-full max-w-md">
+        <div class="lux-card rounded-2xl p-10 text-center relative">
+            <header class="mb-10">
+                <h1 class="text-4xl sm:text-5xl font-light tracking-[0.2em] mb-3">
+                    HYPER<span class="font-semibold gold-text-gradient">DEALZ</span>
+                </h1>
+                <p class="text-gray-500 font-light tracking-[0.1em] text-xs sm:text-sm uppercase">
+                    Exklusiver Zugang. Demnächst.
+                </p>
+            </header>
+
+            <form id="waitlist-form" class="space-y-5">
+                <div>
+                    <input 
+                        type="email" 
+                        id="email-input" 
+                        name="email"
+                        placeholder="Ihre E-Mail-Adresse" 
+                        required
+                        class="w-full bg-black border border-gray-800 text-white px-5 py-4 rounded-xl outline-none focus:border-yellow-600 transition-colors duration-300 font-light placeholder-gray-600 text-center tracking-wide"
+                    >
+                </div>
+                
+                <button 
+                    type="submit" 
+                    id="submit-btn"
+                    class="w-full gold-bg-gradient text-black font-semibold py-4 rounded-xl uppercase tracking-widest text-sm transition-opacity duration-300 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    Einladung Anfordern
+                </button>
+            </form>
+
+            <div id="success-message" class="hidden py-8">
+                <h2 class="gold-text-gradient font-semibold tracking-[0.2em] text-xl uppercase mb-2">Zugang Reserviert</h2>
+                <p class="text-gray-500 font-light text-sm tracking-wide">Sie stehen auf der exklusiven Liste.</p>
+            </div>
+
+            <div id="error-message" class="hidden mt-4">
+                <p class="text-red-500 font-light text-xs tracking-wide"></p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Supabase Configuration ---
+        // Füge hier deine echten Supabase-Credentials ein
+        const NEXT_PUBLIC_SUPABASE_URL = 'https://lefdgxbkzmgwkgywvhet.supabase.co';
+        const NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZmRneGJrem1nd2tneXd2aGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjE5MzgsImV4cCI6MjA5ODk5NzkzOH0.383Hu1-s57UHX8NvKFsv8TnrJQSh0fncwH2nQbEqpg0';
+        
+        // Supabase Client Initialisierung
+        const supabase = window.supabase.createClient(NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY);
+
+        // --- DOM Elemente ---
+        const form = document.getElementById('waitlist-form');
+        const emailInput = document.getElementById('email-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+        const errorText = errorMessage.querySelector('p');
+
+        // --- E-Mail Validierungsfunktion ---
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // --- Event Listener ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Verhindert den Standard-Event-Reset (Seiten-Reload)
+            
+            const email = emailInput.value.trim();
+            
+            if (!email || !isValidEmail(email)) {
+                errorText.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            // UI State: Loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'LÄDT...';
+            errorMessage.classList.add('hidden');
+            emailInput.disabled = true;
+
+            try {
+                // Supabase Insert: Lead in Tabelle 'leads' eintragen
+                const { error } = await supabase
+                    .from('leads')
+                    .insert([{ email }]);
+
+                if (error) {
+                    throw error;
+                }
+
+                // UI State: Success (Formular elegant ausblenden, Erfolgsmeldung zeigen)
+                form.style.display = 'none';
+                successMessage.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Fehler beim Eintragen:', error);
+                
+                let errorMsgText = 'Ein Fehler ist aufgetreten. Bitte später versuchen.';
+                // Unique Constraint Error (E-Mail bereits vorhanden)
+                if (error.code === '23505') {
+                    errorMsgText = 'Diese E-Mail-Adresse ist bereits auf der Warteliste.';
+                }
+                
+                errorText.textContent = errorMsgText;
+                errorMessage.classList.remove('hidden');
+                
+                // UI State: Reset bei Fehler
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'EINLADUNG ANFORDERN';
+                emailInput.disabled = false;
+                emailInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
