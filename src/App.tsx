@@ -110,7 +110,7 @@ export default function App() {
             </p>
 
             {/* Kompaktes, zentriertes Eingabefeld */}
-            <form onSubmit={handleSubmit} className="w-full flex items-center border border-zinc-800 focus-within:border-[#BF953F] rounded-sm transition-colors duration-200 bg-transparent">
+            <form onSubmit={handleSubmit} className="w-full flex items-center border border-zinc-900 focus-within:border-[#BF953F] rounded-sm transition-all duration-300 bg-transparent max-w-[340px]">
               <input 
                 type="email" 
                 required
@@ -118,14 +118,19 @@ export default function App() {
                 onChange={(e) => setEmail(e.target.value)}
                 onFocus={() => triggerHaptic(10)}
                 placeholder="mail@domain.tld" 
-                className="w-full bg-transparent px-4 py-3.5 text-sm text-white placeholder-zinc-600 outline-none"
+                className="w-full bg-transparent px-4 py-3 text-xs tracking-wider text-white placeholder-zinc-700 outline-none appearance-none"
+                style={{
+                  // Verhindert den hässlichen weißen Hintergrund bei Browser-Autofill
+                  WebkitBoxShadow: '0 0 0 30px #000000 inset',
+                  WebkitTextFillColor: '#FFFFFF',
+                }}
               />
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 text-[#BF953F] hover:text-[#FCF6BA] transition-colors font-mono text-sm tracking-widest uppercase border-l border-zinc-950 disabled:opacity-50"
+                className="pr-4 pl-2 text-zinc-500 hover:text-[#FCF6BA] transition-colors text-sm font-light disabled:opacity-50"
               >
-                {isSubmitting ? '...' : '→'}
+                {isSubmitting ? '...' : '›'}
               </button>
             </form>
           </>
