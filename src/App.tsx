@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase-Client initialisieren (Umgebungsvariablen über Vite einpflegen)
+// Supabase-Client initialisieren
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -14,35 +14,38 @@ export default function App() {
   const [vipId, setVipId] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>('none');
   
-  // Ref für den Slot-Machine-Zähler (Verhindert React-DOM-Overhead beim Hochzählen)
+  // Ref für den Slot-Machine-Zähler zur render-freien Mutation
   const counterRef = useRef<HTMLSpanElement>(null);
 
-  // Haptisches Feedback Hilfsfunktion
+  // Haptische Kapselung mit Feature-Detection
   const triggerHaptic = (pattern: number | number[]) => {
-    if (typeof window !== 'undefined' && navigator.vibrate) {
-      navigator.vibrate(pattern);
+    if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {
+        console.warn('Haptic feedback not supported by device configuration', e);
+      }
     }
   };
 
-  // Slot-Machine-Animation für die VIP-Nummer
+  // Performance-optimierte Slot-Machine-Animation über native DOM-Mutation
   const animateSlotMachine = (targetId: number) => {
     let current = 0;
     const duration = 1200; // ms
     const steps = 30;
     const stepTime = duration / steps;
     
-    triggerHaptic([30, 50, 30]); // Start-Vibration
+    triggerHaptic([30, 50, 30]);
 
     const interval = setInterval(() => {
       current += Math.ceil(targetId / steps);
       if (current >= targetId) {
         current = targetId;
         clearInterval(interval);
-        triggerHaptic(40); // Harter finaler Stop-Puls
+        triggerHaptic(40);
       }
       
       if (counterRef.current) {
-        // Direkte DOM-Mutation zur Performance-Schonung
         counterRef.current.textContent = `#${String(current).padStart(4, '0')}`;
       }
     }, stepTime);
@@ -53,7 +56,7 @@ export default function App() {
     if (!email || isSubmitting) return;
 
     setIsSubmitting(true);
-    triggerHaptic(15); // Klick-Feedback
+    triggerHaptic(15);
 
     try {
       const { data, error } = await supabase
@@ -64,116 +67,103 @@ export default function App() {
 
       if (error) {
         if (error.code === '23505') {
-          alert('Diese E-Mail-Adresse ist bereits für den VIP-Launch registriert.');
+          alert('Diese E-Mail-Adresse ist bereits registriert.');
         } else {
           throw error;
         }
       } else if (data) {
         setVipId(String(data.id).padStart(4, '0'));
-        // Starte Slot-Machine nach kurzem Delay
         setTimeout(() => animateSlotMachine(data.id), 100);
       }
     } catch (err) {
-      console.error('Fehler beim Lead-Inbound:', err);
-      alert('System kurz ausgelastet. Bitte versuche es gleich noch einmal.');
+      console.error('Lead insertion failed:', err);
+      alert('System ausgelastet. Bitte später erneut versuchen.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white flex flex-col justify-between items-center p-6 font-sans selection:bg-[#bf953f] selection:text-black">
+    <div className="min-h-screen w-full bg-[#000000] text-white flex flex-col justify-between items-center px-6 selection:bg-[#BF953F]/30">
       
-      {/* TOP: Platzhalter für zukünftigen Banner-Slot (Rechtliche Compliance: Sichtbar) */}
-      <div className="w-full max-w-md h-12 border border-neutral-900 bg-[#0c0c0c] flex items-center justify-center rounded text-xs text-neutral-600 tracking-widest uppercase">
-        Hyperdealz Operational Hub — Secure Link
-      </div>
-
-      {/* CENTER: Das Kern-Panel */}
-      <main className="w-full max-w-md bg-[#0c0c0c] border border-neutral-900 rounded-2xl p-8 relative overflow-hidden shadow-[0_0_50px_rgba(191,149,63,0.03)] transition-all duration-500 hover:shadow-[0_0_60px_rgba(191,149,63,0.06)]">
-        
-        {/* Subtiler Gold-Gradient im Hintergrund */}
-        <div className="absolute -top-40 -left-40 w-80 h-80 bg-[#bf953f] opacity-[0.02] blur-[100px] pointer-events-none" />
-
-        {/* Branding */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] bg-clip-text text-transparent uppercase">
-            Hyperdealz.de
-          </h1>
-          <p className="text-xs text-neutral-400 mt-2 font-mono uppercase tracking-widest">
-            Halbverdeckte Rückwärts-Auktionen
-          </p>
+      {/* 1. Top: Status Indikator */}
+      <header className="h-[20vh] flex items-center justify-center">
+        <div className="flex items-center gap-2 tracking-widest text-[10px] text-zinc-500 uppercase">
+          <span className="w-1.5 h-1.5 bg-[#BF953F] rounded-full animate-pulse" />
+          Pre-Launch Access
         </div>
+      </header>
+
+      {/* 2. Center: Interaktionszone */}
+      <main className="flex-1 flex flex-col items-center justify-center w-full max-w-[400px] text-center gap-8">
+        
+        {/* Logo mit simuliertem Gold-Gradient */}
+        <h1 className="text-3xl font-bold tracking-wider uppercase bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728] bg-clip-text text-transparent">
+          Hyperdealz.de
+        </h1>
 
         {!vipId ? (
-          /* FORMULAR-STATE */
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-lg font-medium text-neutral-200">Sichere dir VIP-Priorität</h2>
-              <p className="text-xs text-neutral-500 max-w-xs mx-auto">
-                Keine Textwüsten. Reine Performance. Registrierung rein via passwortlosem Klick.
-              </p>
-            </div>
+          <>
+            {/* Minimale Micro-Copy */}
+            <p className="text-xs tracking-wide text-zinc-400 uppercase">
+              Zugangskapazität limitiert.
+            </p>
 
-            <div className="relative">
-              <input
-                type="email"
+            {/* Kompaktes, zentriertes Eingabefeld */}
+            <form onSubmit={handleSubmit} className="w-full flex items-center border border-zinc-800 focus-within:border-[#BF953F] rounded-sm transition-colors duration-200 bg-transparent">
+              <input 
+                type="email" 
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => triggerHaptic(10)} // Sanfter Input-Fokus-Puls
-                placeholder="Deine E-Mail-Adresse"
-                className="w-full bg-[#000000] border border-neutral-800 focus:border-[#bf953f] rounded-xl px-4 py-3.5 text-sm text-white placeholder-neutral-600 focus:outline-none transition-all duration-300 font-mono"
+                onFocus={() => triggerHaptic(10)}
+                placeholder="mail@domain.tld" 
+                className="w-full bg-transparent px-4 py-3.5 text-sm text-white placeholder-zinc-600 outline-none"
               />
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full bg-[#0c0c0c] hover:bg-[#121212] border border-[#bf953f] text-[#bf953f] hover:text-[#fcf6ba] font-mono text-xs uppercase tracking-widest py-4 rounded-xl font-bold transition-all duration-300 transform active:scale-[0.99] disabled:opacity-50"
-            >
-              {isSubmitting ? 'Verarbeite Inbound...' : '[ VIP-LAUNCH-CODE ANFORDERN ]'}
-            </button>
-          </form>
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className="px-5 text-[#BF953F] hover:text-[#FCF6BA] transition-colors font-mono text-sm tracking-widest uppercase border-l border-zinc-950 disabled:opacity-50"
+              >
+                {isSubmitting ? '...' : '→'}
+              </button>
+            </form>
+          </>
         ) : (
           /* SUCCESS-STATE (Slot Machine) */
-          <div className="text-center space-y-6 py-4 animate-fade-in">
-            <div className="w-12 h-12 bg-neutral-900 border border-[#bf953f]/30 rounded-full flex items-center justify-center mx-auto shadow-[0_0_15px_rgba(191,149,63,0.1)]">
-              <span className="text-[#bf953f] text-lg">✓</span>
+          <div className="w-full flex flex-col items-center gap-4 animate-fade-in">
+            <div className="w-10 h-10 bg-zinc-950 border border-[#BF953F]/30 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(191,149,63,0.1)]">
+              <span className="text-[#BF953F] text-sm">✓</span>
             </div>
             
             <div className="space-y-1">
-              <h2 className="text-md uppercase tracking-wider text-neutral-400 font-mono">Dein System-Status</h2>
-              {/* Hier mutiert die Slot-Machine-Animation direkt rein */}
+              <h2 className="text-[10px] uppercase tracking-wider text-zinc-500 font-mono">System-Status</h2>
+              {/* Direkte DOM-Mutation */}
               <span 
                 ref={counterRef} 
-                className="block text-4xl font-extrabold font-mono tracking-wider text-white tabular-nums"
+                className="block text-3xl font-extrabold font-mono tracking-wider text-white tabular-nums"
               >
                 #0000
               </span>
             </div>
 
-            <p className="text-xs text-neutral-500 max-w-xs mx-auto leading-relaxed">
-              Dein Einlass-Token wurde kryptografisch gesichert. Wir senden dir deinen Zugangscode vor allen anderen an <span className="text-neutral-300 font-mono">{email}</span>.
+            <p className="text-[11px] tracking-wide text-zinc-400 max-w-[280px] leading-relaxed">
+              Zugangstoken reserviert. Code-Zustellung erfolgt an <span className="text-white font-mono">{email}</span>.
             </p>
           </div>
         )}
       </main>
 
-      {/* BOTTOM: Gesetzlicher Footer (2-Klick-Regel, deklarative Modals) */}
-      <footer className="w-full max-w-md flex justify-center space-x-6 text-[10px] font-mono uppercase tracking-wider text-neutral-600 my-4 z-10">
-        <button onClick={() => { triggerHaptic(10); setActiveModal('impressum'); }} className="hover:text-[#bf953f] transition-colors">
-          Impressum
-        </button>
-        <button onClick={() => { triggerHaptic(10); setActiveModal('datenschutz'); }} className="hover:text-[#bf953f] transition-colors">
-          Datenschutz
-        </button>
+      {/* 3. Bottom: Rechtssicherer Footer */}
+      <footer className="h-[10vh] flex items-center justify-center gap-6 opacity-20 hover:opacity-100 transition-opacity duration-300">
+        <button onClick={() => { triggerHaptic(10); setActiveModal('impressum'); }} className="text-[10px] tracking-widest uppercase hover:text-[#BF953F]">Impressum</button>
+        <button onClick={() => { triggerHaptic(10); setActiveModal('datenschutz'); }} className="text-[10px] tracking-widest uppercase hover:text-[#BF953F]">Datenschutz</button>
       </footer>
 
-      {/* DEKLARATIVE MODALS (Rechtssicher eingebettet) */}
+      {/* DEKLARATIVE MODALS */}
       {activeModal !== 'none' && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-[#0c0c0c] border border-neutral-900 w-full max-w-lg max-h-[75vh] rounded-2xl p-6 flex flex-col justify-between shadow-2xl">
+          <div className="bg-[#0c0c0c] border border-neutral-900 w-full max-w-lg max-h-[75vh] rounded-sm p-6 flex flex-col justify-between shadow-2xl">
             <div className="overflow-y-auto pr-2 space-y-4 text-xs text-neutral-400 leading-relaxed font-mono">
               {activeModal === 'impressum' ? (
                 <>
@@ -195,7 +185,7 @@ export default function App() {
             </div>
             <button
               onClick={() => { triggerHaptic(10); setActiveModal('none'); }}
-              className="w-full mt-6 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 font-mono text-[10px] uppercase tracking-widest py-3 rounded-xl transition-all"
+              className="w-full mt-6 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 font-mono text-[10px] uppercase tracking-widest py-3 rounded-sm transition-all"
             >
               [ Schließen ]
             </button>
