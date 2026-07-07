@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { supabase } from './lib/supabaseClient';
 
+import { AuctionCard, Auction } from './components/AuctionCard';
+
 type ModalType = 'none' | 'impressum' | 'datenschutz';
 
 export default function App() {
@@ -9,6 +11,22 @@ export default function App() {
   const [vipId, setVipId] = useState<string | null>(null);
   const [activeModal, setActiveModal] = useState<ModalType>('none');
   const counterRef = useRef<HTMLSpanElement>(null);
+
+  const [demoAuction, setDemoAuction] = useState<Auction>({
+    id: 'demo-1',
+    title: 'ROLEX DAYTONA PLATINUM',
+    current_price: 125000,
+    floor_price: 90000,
+    status: 'LIVE'
+  });
+
+  const cycleStatus = () => {
+    if (typeof window !== 'undefined' && navigator.vibrate) navigator.vibrate(10);
+    setDemoAuction(prev => ({
+      ...prev,
+      status: prev.status === 'LIVE' ? 'FOMO_HOT' : prev.status === 'FOMO_HOT' ? 'FOMO_CRITICAL' : 'LIVE'
+    }));
+  };
 
   const triggerHaptic = (pattern: number | number[]) => {
     if (typeof window !== 'undefined' && navigator.vibrate) {
@@ -90,7 +108,7 @@ export default function App() {
           System Aktiv / Pre-Launch
         </p>
 
-        <div className="w-full mt-24 mb-4">
+        <div className="w-full mt-12 mb-4">
           <p className="text-[10px] text-neutral-500 font-mono tracking-widest uppercase mb-3">
             Zugangskapazität limitiert.
           </p>
@@ -126,6 +144,15 @@ export default function App() {
             </div>
           )}
         </div>
+
+        {/* DEMO AUCTION CARD */}
+        <div className="w-full mt-10 mb-8 flex flex-col items-center gap-4">
+          <AuctionCard initialAuction={demoAuction} />
+          <button onClick={cycleStatus} className="text-[9px] text-neutral-500 bg-neutral-900 px-3 py-1.5 rounded-md uppercase tracking-widest hover:text-[#bf953f] transition-colors border border-neutral-800">
+            [ Dev: Toggle Status ]
+          </button>
+        </div>
+
       </main>
 
       {/* FOOTER: Unten fixiert */}
