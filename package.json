@@ -8,6 +8,7 @@
     "dev:landing": "npm run dev --workspace=apps/landingpage",
     "dev:app": "npm run dev --workspace=apps/app-platform",
     "build:landing": "npm run build --workspace=apps/landingpage",
-    "build:app": "npm run build --workspace=apps/app-platform"
+    "build:app": "npm run build --workspace=apps/app-platform",
+    "build": "npm run build --workspaces --if-present"
   }
 }
