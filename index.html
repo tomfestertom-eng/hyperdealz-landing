@@ -46,6 +46,12 @@
             border: 1px solid rgba(255, 255, 255, 0.04);
             box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.02);
         }
+        
+        .modal-card {
+            background-color: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 40px 80px -12px rgba(0, 0, 0, 1), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
 
         /* Webkit Autofill Style Override für absolute Schwarz-Ästhetik */
         input:-webkit-autofill,
@@ -65,13 +71,28 @@
             @apply bg-gradient-to-r from-amber-500 via-yellow-400 to-yellow-600;
         }
 
-        /* Pulse animation for the system dot */
         @keyframes subtle-pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.5; transform: scale(0.8); }
         }
         .animate-subtle-pulse {
             animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Modal Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
     </style>
     
@@ -98,7 +119,7 @@
 
         <div class="lux-card rounded-[20px] p-8 sm:p-10 relative overflow-hidden transition-all duration-700">
             
-            <form id="waitlist-form" class="relative">
+            <form id="waitlist-form" class="relative z-10">
                 <p class="text-[11px] text-gray-500 mb-6 text-center tracking-[0.2em] uppercase">
                     Secured Terminal Access
                 </p>
@@ -119,7 +140,6 @@
                         title="Zutritt anfordern"
                         class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center gold-bg-gradient rounded-lg hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group-focus-within:opacity-100"
                     >
-                        <!-- Arrow Icon -->
                         <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                         </svg>
@@ -132,7 +152,7 @@
             </form>
 
             <!-- VIP Counter Animation Area -->
-            <div id="success-message" class="hidden py-2 flex flex-col items-center">
+            <div id="success-message" class="hidden py-2 flex flex-col items-center z-10 relative">
                 <p class="text-gray-500 font-light text-[10px] uppercase tracking-[0.3em] mb-5">
                     Access Granted
                 </p>
@@ -149,7 +169,84 @@
         </div>
     </main>
 
+    <!-- Footer Links -->
+    <footer class="fixed bottom-8 w-full flex justify-center space-x-8 text-[11px] uppercase tracking-[0.2em] text-gray-600">
+        <button onclick="openModal('impressum-modal')" class="hover:text-yellow-500 transition-colors duration-300 outline-none">Impressum</button>
+        <button onclick="openModal('datenschutz-modal')" class="hover:text-yellow-500 transition-colors duration-300 outline-none">Datenschutz</button>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Impressum Modal -->
+    <div id="impressum-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('impressum-modal')"></div>
+        <!-- Modal Content -->
+        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <button onclick="closeModal('impressum-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Impressum</h2>
+            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-4">
+                <p class="text-white/80">[PLATZHALTER: Firmenname / Betreiber der Website]</p>
+                <p>[PLATZHALTER: Straße und Hausnummer]<br>[PLATZHALTER: Postleitzahl und Ort]</p>
+                <p><strong>Vertreten durch:</strong><br>[PLATZHALTER: Vor- und Nachname]</p>
+                <p><strong>Kontakt:</strong><br>Telefon: [PLATZHALTER: Telefonnummer]<br>E-Mail: [PLATZHALTER: E-Mail-Adresse]</p>
+                <p><strong>Umsatzsteuer-ID:</strong><br>Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:<br>[PLATZHALTER: DE XXX XXX XXX]</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datenschutz Modal -->
+    <div id="datenschutz-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('datenschutz-modal')"></div>
+        <!-- Modal Content -->
+        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <button onclick="closeModal('datenschutz-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Datenschutz</h2>
+            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-4">
+                <p><strong>1. Datenschutz auf einen Blick</strong><br>[PLATZHALTER: Allgemeine Hinweise zur Datenerfassung auf dieser Website. Wer ist verantwortlich?]</p>
+                <p><strong>2. Datenerfassung auf unserer Website</strong><br>[PLATZHALTER: Erläuterung, wie E-Mails über Supabase verarbeitet und in der EU gespeichert werden. Hinweis auf die rechtliche Grundlage (Einwilligung zur Warteliste/Pre-Launch).]</p>
+                <p><strong>3. Ihre Rechte</strong><br>[PLATZHALTER: Hinweis auf Auskunft, Sperrung, Löschung und Berichtigung von Daten gemäß DSGVO.]</p>
+                <p><strong>4. Hosting & Drittanbieter</strong><br>[PLATZHALTER: Hosting über Vercel / GitHub Pages und Datenbank über Supabase Inc., ggf. Auftragsverarbeitungsvertrag erwähnen.]</p>
+                <p class="mt-8 text-xs"><em>Stand: [PLATZHALTER: Datum einfügen]</em></p>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // --- Modal Logic ---
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const content = modal.querySelector('.modal-card');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            // Timeout to allow display block to render before transform
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const content = modal.querySelector('.modal-card');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal('impressum-modal');
+                closeModal('datenschutz-modal');
+            }
+        });
+
         // --- Supabase Configuration ---
         const NEXT_PUBLIC_SUPABASE_URL = 'https://lefdgxbkzmgwkgywvhet.supabase.co';
         const NEXT_PUBLIC_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxlZmRneGJrem1nd2tneXd2aGV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjE5MzgsImV4cCI6MjA5ODk5NzkzOH0.383Hu1-s57UHX8NvKFsv8TnrJQSh0fncwH2nQbEqpg0';
@@ -198,7 +295,7 @@
                     return;
                 }
 
-                // UI State: Loading (Minimize icon, show loading spinner)
+                // UI State: Loading
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = `<svg class="animate-spin w-4 h-4 text-black" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
                 errorMessage.classList.add('hidden');
@@ -214,14 +311,13 @@
                         throw error;
                     }
 
-                    // UI State: Success (Formular ausblenden)
+                    // UI State: Success
                     form.style.opacity = '0';
                     setTimeout(() => {
                         form.style.display = 'none';
                         successMessage.classList.remove('hidden');
                         successMessage.style.opacity = '0';
                         
-                        // Fade in Success Message
                         requestAnimationFrame(() => {
                             successMessage.style.transition = 'opacity 0.6s ease';
                             successMessage.style.opacity = '1';
@@ -230,7 +326,7 @@
                         // --- VIP Zähler Animation ---
                         const counterElement = document.getElementById('vip-counter');
                         const targetVipNumber = Math.floor(Math.random() * 8900) + 100;
-                        const duration = 1500; // 1.5 Sekunden
+                        const duration = 1500; 
                         const startTimestamp = performance.now();
 
                         function animateCounter(timestamp) {
@@ -244,7 +340,6 @@
                                 requestAnimationFrame(animateCounter);
                             } else {
                                 counterElement.textContent = '#' + targetVipNumber.toString().padStart(4, '0');
-                                // Haptisches Feedback
                                 if (navigator.vibrate) {
                                     navigator.vibrate([100]);
                                 }
@@ -252,7 +347,7 @@
                         }
                         requestAnimationFrame(animateCounter);
 
-                    }, 400); // 400ms nach dem opacity fade-out
+                    }, 400); 
 
                 } catch (error) {
                     console.error('Fehler:', error);
