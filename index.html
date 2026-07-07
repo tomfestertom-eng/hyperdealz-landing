@@ -186,12 +186,34 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Impressum</h2>
-            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-4">
-                <p class="text-white/80">[PLATZHALTER: Firmenname / Betreiber der Website]</p>
-                <p>[PLATZHALTER: Straße und Hausnummer]<br>[PLATZHALTER: Postleitzahl und Ort]</p>
-                <p><strong>Vertreten durch:</strong><br>[PLATZHALTER: Vor- und Nachname]</p>
-                <p><strong>Kontakt:</strong><br>Telefon: [PLATZHALTER: Telefonnummer]<br>E-Mail: [PLATZHALTER: E-Mail-Adresse]</p>
-                <p><strong>Umsatzsteuer-ID:</strong><br>Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:<br>[PLATZHALTER: DE XXX XXX XXX]</p>
+            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-6">
+                
+                <div>
+                    <h3 class="font-bold text-white mb-1">Angaben gemäß § 5 DDG</h3>
+                    <p class="text-white/80">
+                        [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
+                        [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
+                        [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-1">Kontakt</h3>
+                    <p class="text-white/80">
+                        Telefon: <span id="dyn-phone">[wird geladen...]</span><br>
+                        E-Mail: <span id="dyn-email" class="cursor-pointer hover:text-amber-500 transition-colors">[wird geladen...]</span>
+                    </p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-1">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+                    <p class="text-white/80">
+                        [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
+                        [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
+                        [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
+                    </p>
+                </div>
+
             </div>
         </div>
     </div>
@@ -240,6 +262,11 @@
     </div>
 
     <script>
+        // --- Anti-Bot Configuration ---
+        // Generiere deine Base64-Strings online (z.B. btoa('mail@domain.tld') in der Browser-Konsole)
+        const SECURE_MAIL_B64 = 'W0RlaW5lIEUtTWFpbC1BZHJlc3NlXQ=='; // "[Deine E-Mail-Adresse]"
+        const SECURE_PHONE_B64 = 'W0RlaW5lIFRlbGVmb25udW1tZXJd'; // "[Deine Telefonnummer]"
+
         // --- Modal Logic ---
         function openModal(id) {
             const modal = document.getElementById(id);
@@ -251,6 +278,29 @@
                 content.classList.add('scale-100');
             }, 10);
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+            // Anti-Bot Injection für Impressum
+            if (id === 'impressum-modal' && !modal.dataset.injected) {
+                try {
+                    const decEmail = atob(SECURE_MAIL_B64);
+                    const decPhone = atob(SECURE_PHONE_B64);
+
+                    const emailEl = document.getElementById('dyn-email');
+                    const phoneEl = document.getElementById('dyn-phone');
+                    
+                    if(emailEl && phoneEl) {
+                        phoneEl.textContent = decPhone;
+                        emailEl.textContent = decEmail;
+                        
+                        emailEl.addEventListener('click', () => {
+                            window.location.href = 'mai' + 'lto:' + decEmail;
+                        });
+                    }
+                    modal.dataset.injected = "true";
+                } catch (e) {
+                    console.error("Base64 Dekodierung fehlgeschlagen. Bitte prüfe die Variablen SECURE_MAIL_B64 und SECURE_PHONE_B64.");
+                }
+            }
         }
 
         function closeModal(id) {
