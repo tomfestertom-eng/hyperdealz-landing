@@ -191,8 +191,11 @@
                 <div>
                     <h3 class="font-bold text-white mb-1">Angaben gemäß § 5 DDG</h3>
                     <p class="text-white/80">
+                        <!-- HIER EINTRAGEN: Dein Vor- und Nachname (Die span-Klasse 'bot-trap' in der Mitte stehen lassen!) -->
                         [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
+                        <!-- HIER EINTRAGEN: Deine Straße und Hausnummer -->
                         [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
+                        <!-- HIER EINTRAGEN: Deine PLZ und Wohnort -->
                         [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
                     </p>
                 </div>
@@ -208,8 +211,11 @@
                 <div>
                     <h3 class="font-bold text-white mb-1">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
                     <p class="text-white/80">
+                        <!-- HIER EINTRAGEN: Dein Vor- und Nachname -->
                         [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
+                        <!-- HIER EINTRAGEN: Deine Straße und Hausnummer -->
                         [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
+                        <!-- HIER EINTRAGEN: Deine PLZ und Wohnort -->
                         [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
                     </p>
                 </div>
@@ -264,8 +270,12 @@
     <script>
         // --- Anti-Bot Configuration ---
         // Generiere deine Base64-Strings online (z.B. btoa('mail@domain.tld') in der Browser-Konsole)
-        const SECURE_MAIL_B64 = 'W0RlaW5lIEUtTWFpbC1BZHJlc3NlXQ=='; // "[Deine E-Mail-Adresse]"
-        const SECURE_PHONE_B64 = 'W0RlaW5lIFRlbGVmb25udW1tZXJd'; // "[Deine Telefonnummer]"
+        
+        // HIER EINTRAGEN: Ersetze den Base64-String durch deine eigene E-Mail-Adresse (Base64-kodiert)
+        const SECURE_MAIL_B64 = 'W0RlaW5lIEUtTWFpbC1BZHJlc3NlXQ=='; 
+        
+        // HIER EINTRAGEN: Ersetze den Base64-String durch deine eigene Telefonnummer (Base64-kodiert)
+        const SECURE_PHONE_B64 = 'W0RlaW5lIFRlbGVmb25udW1tZXJd';
 
         // --- Modal Logic ---
         function openModal(id) {
