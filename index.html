@@ -4,9 +4,64 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hyperdealz | Pre-Launch</title>
+    <!-- Tailwind direkt per CDN laden (Kein Setup nötig, funktioniert sofort) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom Gold-Gradient */
+      .gold-text {
+        background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    </style>
   </head>
-  <body class="bg-[#000000]">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body class="bg-[#000000] text-white min-h-screen flex flex-col justify-between items-center p-6 antialiased font-sans">
+    
+    <!-- Spacer oben -->
+    <div class="h-4"></div>
+
+    <!-- CENTER CONTAINER -->
+    <main class="w-full max-w-sm flex flex-col items-center text-center px-4">
+      
+      <!-- Haupt-Header -->
+      <h1 class="text-3xl font-black tracking-[0.25em] gold-text uppercase">
+        Hyperdealz
+      </h1>
+      
+      <!-- Sub-Header -->
+      <p class="text-[10px] text-emerald-500 font-mono tracking-widest uppercase mt-2 flex items-center gap-1.5 justify-center">
+        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        System Aktiv / Pre-Launch
+      </p>
+
+      <!-- Formular Sektion -->
+      <div class="w-full mt-24 mb-4">
+        <p class="text-[10px] text-neutral-500 font-mono tracking-widest uppercase mb-3">
+          Zugangskapazität limitiert.
+        </p>
+
+        <form class="relative w-full flex items-center" onsubmit="alert('System bereit! Wir verknüpfen gleich die Datenbank.'); return false;">
+          <input
+            type="email"
+            required
+            placeholder="mail@domain.tld"
+            class="w-full bg-[#0c0c0c] border border-neutral-900 focus:border-[#bf953f]/50 rounded-xl pl-4 pr-12 py-3.5 text-sm text-neutral-200 placeholder-neutral-700 focus:outline-none transition-all duration-300 font-mono"
+          />
+          <button 
+            type="submit"
+            class="absolute right-3 text-neutral-500 hover:text-[#bf953f] transition-colors p-1 font-mono text-lg"
+          >
+            ›
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="flex justify-center space-x-6 text-[10px] font-mono uppercase tracking-wider text-neutral-600 mb-4">
+      <a href="#" class="hover:text-[#bf953f] transition-colors">Impressum</a>
+      <a href="#" class="hover:text-[#bf953f] transition-colors">Datenschutz</a>
+    </footer>
+
   </body>
 </html>
