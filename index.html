@@ -181,7 +181,7 @@
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('impressum-modal')"></div>
         <!-- Modal Content -->
-        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[70vh] overflow-y-auto transform scale-95 transition-transform duration-300">
             <button onclick="closeModal('impressum-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -201,17 +201,40 @@
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('datenschutz-modal')"></div>
         <!-- Modal Content -->
-        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[85vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[70vh] overflow-y-auto transform scale-95 transition-transform duration-300">
             <button onclick="closeModal('datenschutz-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Datenschutz</h2>
-            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-4">
-                <p><strong>1. Datenschutz auf einen Blick</strong><br>[PLATZHALTER: Allgemeine Hinweise zur Datenerfassung auf dieser Website. Wer ist verantwortlich?]</p>
-                <p><strong>2. Datenerfassung auf unserer Website</strong><br>[PLATZHALTER: Erläuterung, wie E-Mails über Supabase verarbeitet und in der EU gespeichert werden. Hinweis auf die rechtliche Grundlage (Einwilligung zur Warteliste/Pre-Launch).]</p>
-                <p><strong>3. Ihre Rechte</strong><br>[PLATZHALTER: Hinweis auf Auskunft, Sperrung, Löschung und Berichtigung von Daten gemäß DSGVO.]</p>
-                <p><strong>4. Hosting & Drittanbieter</strong><br>[PLATZHALTER: Hosting über Vercel / GitHub Pages und Datenbank über Supabase Inc., ggf. Auftragsverarbeitungsvertrag erwähnen.]</p>
-                <p class="mt-8 text-xs"><em>Stand: [PLATZHALTER: Datum einfügen]</em></p>
+            <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Datenschutzerklärung</h2>
+            <div class="text-sm font-light text-gray-400 leading-relaxed space-y-6">
+                
+                <div>
+                    <h3 class="font-bold text-white mb-1">1. Allgemeine Hinweise und Pflichtinformationen</h3>
+                    <p>Der Schutz Ihrer persönlichen Daten ist uns ein ernstes Anliegen. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften (DSGVO) sowie dieser Datenschutzerklärung.</p>
+                    <p class="mt-2">Wenn Sie diese Webseite nutzen, werden verschiedene personenbezogene Daten erhoben. Diese Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-1">2. Datenerfassung auf unserer Website</h3>
+                    <p>Die Datenerfassung auf dieser Website erfolgt ausschließlich zum Zweck der Reservierung eines Beta-Zugangs ("Pre-Launch / Coming Soon") für unsere Plattform.</p>
+                    <p class="mt-2">E-Mail-Adresse: Wenn Sie sich in unser Formular eintragen, erheben und speichern wir Ihre E-Mail-Adresse. Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO). Sie können diese Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-1">3. Hosting und Datenverarbeitung (Empfänger der Daten)</h3>
+                    <p>Wir arbeiten mit externen Dienstleistern zusammen, um die Stabilität und Sicherheit unserer Infrastruktur zu gewährleisten:</p>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        <li><strong>Hosting (Vercel):</strong> Diese Website wird bei Vercel Inc. gehostet. Die von Ihnen beim Besuch der Website übertragenen IP-Adressen und Server-Logfiles werden auf den Servern von Vercel verarbeitet.</li>
+                        <li><strong>Datenbank (Supabase):</strong> Die von Ihnen eingegebene E-Mail-Adresse wird direkt in einer verschlüsselten Datenbank der Plattform Supabase (Supabase Inc.) gespeichert. Mit Supabase wurde ein Vertrag zur Auftragsverarbeitung (AVV) geschlossen, um den Schutz Ihrer Daten nach EU-Standards zu garantieren.</li>
+                    </ul>
+                    <p class="mt-2">Eine Weitergabe Ihrer Daten an sonstige Dritte zu kommerziellen Zwecken findet nicht statt.</p>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-white mb-1">4. Ihre Rechte</h3>
+                    <p>Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung, Sperrung oder Löschung dieser Daten zu verlangen.</p>
+                    <p class="mt-2">Bitte wenden Sie sich hierzu an die im Impressum angegebene Kontaktadresse.</p>
+                </div>
             </div>
         </div>
     </div>
