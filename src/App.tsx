@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { supabase } from './lib/supabaseClient';
 
-import { AuctionCard, Auction } from './components/AuctionCard';
+import { AuctionCard, type Auction } from './components/AuctionCard';
 
 type ModalType = 'none' | 'impressum' | 'datenschutz';
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLiveAuction } from '../hooks/useLiveAuction';
 import { Clock, TrendingDown, Info, ShieldCheck } from 'lucide-react';
 
