@@ -170,8 +170,8 @@
     </main>
 
     <!-- Footer Links -->
-    <footer class="fixed bottom-8 w-full flex justify-center space-x-8 text-[11px] uppercase tracking-[0.2em] text-gray-600">
-        <button onclick="openModal('impressum-modal')" class="hover:text-yellow-500 transition-colors duration-300 outline-none">Impressum</button>
+    <footer class="fixed bottom-8 w-full flex justify-center space-x-8 text-[11px] uppercase tracking-[0.2em] text-gray-600 z-10">
+        <button onclick="openImpressumModal()" class="hover:text-yellow-500 transition-colors duration-300 outline-none">Impressum</button>
         <button onclick="openModal('datenschutz-modal')" class="hover:text-yellow-500 transition-colors duration-300 outline-none">Datenschutz</button>
     </footer>
 
@@ -179,47 +179,37 @@
     <!-- Impressum Modal -->
     <div id="impressum-modal" class="fixed inset-0 z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none transition-opacity duration-300">
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal('impressum-modal')"></div>
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeImpressumModal()"></div>
         <!-- Modal Content -->
-        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[70vh] overflow-y-auto transform scale-95 transition-transform duration-300">
-            <button onclick="closeModal('impressum-modal')" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
+        <div class="modal-card rounded-[20px] w-full max-w-lg p-8 sm:p-10 relative z-10 max-h-[70vh] overflow-y-auto transform scale-95 transition-transform duration-300 bg-[#121212] border border-white/10 shadow-2xl">
+            <button onclick="closeImpressumModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white transition-colors outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <h2 class="text-xl font-medium tracking-[0.2em] text-white mb-6 uppercase">Impressum</h2>
             <div class="text-sm font-light text-gray-400 leading-relaxed space-y-6">
-                
                 <div>
-                    <h3 class="font-bold text-white mb-1">Angaben gemäß § 5 DDG</h3>
+                    <h3 class="font-bold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-400 to-yellow-600">Angaben gemäß § 5 DDG</h3>
                     <p class="text-white/80">
-                        <!-- HIER EINTRAGEN: Dein Vor- und Nachname (Die span-Klasse 'bot-trap' in der Mitte stehen lassen!) -->
-                        [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
-                        <!-- HIER EINTRAGEN: Deine Straße und Hausnummer -->
-                        [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
-                        <!-- HIER EINTRAGEN: Deine PLZ und Wohnort -->
-                        [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
+                        <span id="legal-name"></span><br>
+                        <span id="legal-street"></span><br>
+                        <span id="legal-city"></span>
                     </p>
                 </div>
-
                 <div>
-                    <h3 class="font-bold text-white mb-1">Kontakt</h3>
+                    <h3 class="font-bold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-400 to-yellow-600">Kontakt</h3>
                     <p class="text-white/80">
-                        Telefon: <span id="dyn-phone">[wird geladen...]</span><br>
-                        E-Mail: <span id="dyn-email" class="cursor-pointer hover:text-amber-500 transition-colors">[wird geladen...]</span>
+                        Telefon: <span id="legal-phone"></span><br>
+                        E-Mail: <span id="legal-mail" class="cursor-pointer hover:text-amber-500 transition-colors"></span>
                     </p>
                 </div>
-
                 <div>
-                    <h3 class="font-bold text-white mb-1">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
+                    <h3 class="font-bold mb-1 text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-yellow-400 to-yellow-600">Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
                     <p class="text-white/80">
-                        <!-- HIER EINTRAGEN: Dein Vor- und Nachname -->
-                        [Dein vollständiger Vor- und<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> Nachname]<br>
-                        <!-- HIER EINTRAGEN: Deine Straße und Hausnummer -->
-                        [Deine vollständige Straße<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Hausnummer]<br>
-                        <!-- HIER EINTRAGEN: Deine PLZ und Wohnort -->
-                        [Deine Postleitzahl<span class="hidden absolute w-0 h-0 opacity-0 overflow-hidden">bot-trap</span> und Wohnort]
+                        <span id="legal-v-name"></span><br>
+                        <span id="legal-v-street"></span><br>
+                        <span id="legal-v-city"></span>
                     </p>
                 </div>
-
             </div>
         </div>
     </div>
@@ -268,15 +258,6 @@
     </div>
 
     <script>
-        // --- Anti-Bot Configuration ---
-        // Generiere deine Base64-Strings online (z.B. btoa('mail@domain.tld') in der Browser-Konsole)
-        
-        // HIER EINTRAGEN: Ersetze den Base64-String durch deine eigene E-Mail-Adresse (Base64-kodiert)
-        const SECURE_MAIL_B64 = 'W0RlaW5lIEUtTWFpbC1BZHJlc3NlXQ=='; 
-        
-        // HIER EINTRAGEN: Ersetze den Base64-String durch deine eigene Telefonnummer (Base64-kodiert)
-        const SECURE_PHONE_B64 = 'W0RlaW5lIFRlbGVmb25udW1tZXJd';
-
         // --- Modal Logic ---
         function openModal(id) {
             const modal = document.getElementById(id);
@@ -288,29 +269,6 @@
                 content.classList.add('scale-100');
             }, 10);
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
-
-            // Anti-Bot Injection für Impressum
-            if (id === 'impressum-modal' && !modal.dataset.injected) {
-                try {
-                    const decEmail = atob(SECURE_MAIL_B64);
-                    const decPhone = atob(SECURE_PHONE_B64);
-
-                    const emailEl = document.getElementById('dyn-email');
-                    const phoneEl = document.getElementById('dyn-phone');
-                    
-                    if(emailEl && phoneEl) {
-                        phoneEl.textContent = decPhone;
-                        emailEl.textContent = decEmail;
-                        
-                        emailEl.addEventListener('click', () => {
-                            window.location.href = 'mai' + 'lto:' + decEmail;
-                        });
-                    }
-                    modal.dataset.injected = "true";
-                } catch (e) {
-                    console.error("Base64 Dekodierung fehlgeschlagen. Bitte prüfe die Variablen SECURE_MAIL_B64 und SECURE_PHONE_B64.");
-                }
-            }
         }
 
         function closeModal(id) {
@@ -325,7 +283,7 @@
         // Close modal on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                closeModal('impressum-modal');
+                if (typeof closeImpressumModal === 'function') closeImpressumModal();
                 closeModal('datenschutz-modal');
             }
         });
@@ -454,5 +412,68 @@
             });
         });
     </script>
+    <script>
+  // ==========================================
+  // CONFIGURATION: HIER DEINE PRIVATE DATEN EINTRAGEN
+  // ==========================================
+  const TECH_LEAD_CONFIG = {
+    // Trage hier deinen vollständigen Namen ein
+    ownerName: "Thomas Martin Festini Cucco", // HIER EINTRAGEN
+    
+    // Trage hier deine Anschrift ein
+    ownerStreet: "Finnische Allee 17", // HIER EINTRAGEN
+    ownerCity: "25551 Hohenlockstedt", // HIER EINTRAGEN
+    
+    // Trage hier deine Telefonnummer ein
+    ownerPhone: "+49 04826 639062", // HIER EINTRAGEN
+    
+    // Deine E-Mail-Adresse wird zur Sicherheit gesplittet (anti-bot)
+    emailUser: "festerus", // Der Teil VOR dem @ (HIER EINTRAGEN)
+    emailDomain: "gmx.de" // Der Teil NACH dem @ (HIER EINTRAGEN)
+  };
+
+  // ==========================================
+  // ANTI-BOT LOGIK (Injiziert die Daten erst bei Klick)
+  // ==========================================
+  function openImpressumModal() {
+    const fullEmail = `${TECH_LEAD_CONFIG.emailUser}@${TECH_LEAD_CONFIG.emailDomain}`;
+    
+    // Injiziert die Daten dynamisch in die leeren HTML-Container des Modals
+    document.getElementById('legal-name').innerText = TECH_LEAD_CONFIG.ownerName;
+    document.getElementById('legal-street').innerText = TECH_LEAD_CONFIG.ownerStreet;
+    document.getElementById('legal-city').innerText = TECH_LEAD_CONFIG.ownerCity;
+    document.getElementById('legal-phone').innerText = TECH_LEAD_CONFIG.ownerPhone;
+    
+    // Erstellt einen geschützten Klick-Link für Menschen
+    const mailContainer = document.getElementById('legal-mail');
+    mailContainer.innerText = fullEmail;
+    mailContainer.style.cursor = 'pointer';
+    mailContainer.onclick = () => { window.location.href = `mailto:${fullEmail}`; };
+
+    // Verantwortlich für den Inhalt (§ 18 MStV)
+    document.getElementById('legal-v-name').innerText = TECH_LEAD_CONFIG.ownerName;
+    document.getElementById('legal-v-street').innerText = TECH_LEAD_CONFIG.ownerStreet;
+    document.getElementById('legal-v-city').innerText = TECH_LEAD_CONFIG.ownerCity;
+
+    // Modal Sichtbarkeit umschalten (Anzeigen mit edler Animation)
+    const modal = document.getElementById('impressum-modal');
+    const content = modal.querySelector('.modal-card');
+    modal.classList.remove('opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+        content.classList.remove('scale-95');
+        content.classList.add('scale-100');
+    }, 10);
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeImpressumModal() {
+    const modal = document.getElementById('impressum-modal');
+    const content = modal.querySelector('.modal-card');
+    content.classList.remove('scale-100');
+    content.classList.add('scale-95');
+    modal.classList.add('opacity-0', 'pointer-events-none');
+    document.body.style.overflow = '';
+  }
+</script>
 </body>
 </html>
